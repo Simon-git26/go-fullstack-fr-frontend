@@ -7,7 +7,7 @@ const http = require('http');
 
 // Crée un server grace a notre package qui prend en argument la fonction qui sera appelé par le server à chaque requette recu
 const server = http.createServer((req, res) => {
-    res.end('Voila la réponse du serveur si jai de la chance !');
+    res.end("Voila la réponse du serveur si jai de la chance et que je n'est pas fait n'importe quoi  !");
 });
 
 // Ecouter/Attendre les requetes envoyés
