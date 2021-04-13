@@ -2,8 +2,23 @@
 // Importer Express
 const express = require('express');
 
+//Importer Mongoose
+const mongoose = require('mongoose');
+
 // Utilisez la methode express pour crée l'application
 const app = express();
+
+// Connection de mon API vers MongoDB !
+mongoose.connect('mongodb+srv://Simon:Lamotodu26.@cluster0.6mtmj.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+.then(() => console.log('Connexion à MongoDB réussie !'))
+.catch(() => console.log('Connexion à MongoDB échouée !'));
+
+
+
+//Importer body-parser
+const bodyParser = require('body-parser');
 
 
 //---------------------Les Middleware----------------------------
@@ -17,6 +32,19 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     //Appeler next pour passer l'execution au midleware d'apres
     next();
+});
+
+
+//Un midleware qui va utlisez une méthode de body-parser qui va permettre de transformer le corp de la requete en json (objet javascript utilisable)
+app.use(express.json());
+
+//Traiter différement les requetes POST (donc par exemple le bouton vendre de la partie vendre un objet) Crée un nouveau Middleware
+app.post('/api/stuff', (req, res, next) => {
+    //Traiter les données qui sont associé a la requete
+    console.log(req.body);
+    res.status(201).json({
+        message: 'Objet crée !'
+    });
 });
 
 
