@@ -1,14 +1,58 @@
 
-//-----Pour tester/mettre en route le serveur, aller dans dossier backend et rentrer la commande node server et aller sur l'url : http://localhost:3000/ ------------
-//---------Au lieu de node server on peut faire nodemon server puisque je les installer mais la ca marche pas-------------
+//-----Pour tester/mettre en route le serveur, aller dans dossier backend et rentrer la commande nodemon server et aller sur l'url : http://localhost:3000/ ------------
 
 // Importer le package http de node
 const http = require('http');
 
-// Crée un server grace a notre package qui prend en argument la fonction qui sera appelé par le server à chaque requette recu
-const server = http.createServer((req, res) => {
-    res.end("Voila la réponse du serveur si jai de la chance et que je n'est pas fait n'importe quoi  !");
-});
+// Importer notre application
+const app = require('./app');
 
-// Ecouter/Attendre les requetes envoyés
-server.listen(process.env.PORT || 3000);
+
+
+
+// La fonction normalizePort renvoi un port valide, qu'il soit fourni sous la forme d'un numéros ou d'une chaine
+const normalizePort = val => {
+    const port = parseInt(val, 10);
+  
+    if (isNaN(port)) {
+      return val;
+    }
+    if (port >= 0) {
+      return port;
+    }
+    return false;
+};
+const port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+  
+const errorHandler = error => {
+    if (error.syscall !== 'listen') {
+      throw error;
+    }
+    const address = server.address();
+    const bind = typeof address === 'string' ? 'pipe ' + address : 'port: ' + port;
+    switch (error.code) {
+      case 'EACCES':
+        console.error(bind + ' requires elevated privileges.');
+        process.exit(1);
+        break;
+      case 'EADDRINUSE':
+        console.error(bind + ' is already in use.');
+        process.exit(1);
+        break;
+      default:
+        throw error;
+    }
+};
+  
+const server = http.createServer(app);
+
+// La fonction errorHandler recherche les différentes erreurs et les gere de maniere approprié, elle est ensuite enrregistrer dans le serveur
+server.on('error', errorHandler);
+server.on('listening', () => {
+    const address = server.address();
+    const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
+    console.log('Listening on ' + bind);
+});
+  
+server.listen(port);
